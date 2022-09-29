@@ -24,3 +24,10 @@ node . members [org name] [repo name] --file [optional path to save to file]
 
 node . members axleresearch qhts --file "all-repo.csv"
 ```
+
+- Get all Outside collaborators
+```sh
+node . outside-collaborators [org name] --file [optional path to save to file]
+
+node . outside-collaborators axleresearch  --file "outside.csv"
+```
