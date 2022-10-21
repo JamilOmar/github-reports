@@ -23,7 +23,7 @@ program
     let fields;
     if (options.all) {
       result = await ghService.getReposWithCollaborators(org);
-      fields = ["username", "url", "type", "siteAdmin", "isOutside","role", "repo", "org"];
+      fields = ["username", "url", "type", "siteAdmin", "isOutside", "role", "repo", "org"];
     } else {
       result = await ghService.getRepos(org);
       fields = ["name"];
@@ -39,6 +39,7 @@ program
     }
     console.log(result);
   });
+
 program
   .command("outside-collaborators")
   .description("Show all the outside collaborators")
@@ -51,7 +52,7 @@ program
     let fields;
 
     result = await ghService.getOutsideCollaborators(org);
-    fields = ["username", "url", "type", "siteAdmin","isOutside", "role", "repo", "org"];
+    fields = ["username", "url", "type", "siteAdmin", "isOutside", "role", "repo", "org"];
 
     if (options.file) {
       try {
@@ -63,6 +64,7 @@ program
     }
     console.log(result);
   });
+
 program
   .command(`members`)
   .description(`Show all the repository's members`)
@@ -92,6 +94,26 @@ program
       }
     }
     console.log(result);
+  });
+
+program
+  .command(`branch-protection`)
+  .description(`List repos and branch protection status`)
+  .argument("<org>", "org name")
+  .option("-f, --file <string>", "json file to export the list of members")
+  .option("-v, --verbose", "verbose output")
+  .action(async (org, options) => {
+    const authToken = process.env.GH_TOKEN;
+    const ghService = new GithubService(authToken);
+    const result = await ghService.getReposBranchProtection(org, options.verbose);
+    if (options.file) {
+      try {
+        const json = JSON.stringify(result);
+        fs.writeFileSync(options.file, json);
+      } catch (err) {
+        console.error(err);
+      }
+    }
   });
 
 program.parse();
